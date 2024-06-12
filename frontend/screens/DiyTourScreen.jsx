@@ -10,8 +10,8 @@ import {
 } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
 import * as Location from "expo-location";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import moment from 'moment'
+import DateTimePicker from "@react-native-community/datetimepicker";
+import moment from "moment";
 import { FRONT_IP } from "../hide-ip";
 
 export default function DiyTourScreen() {
@@ -21,10 +21,19 @@ export default function DiyTourScreen() {
   const [isOpen, setIsOpen] = useState(false);
   const [date, setDate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+<<<<<<< HEAD
   const [hosts, setHosts] = useState([])
   const [coordinates, setCoordinates] = useState([])
   const [hostAdd, setHostAdd] = useState([]);
+=======
+  const [hosts, setHosts] = useState([]);
+  const [coordinates, setCoordinates] = useState([]);
+  const [allPins, setAllPins] = useState([]);
+  const [isGo, setIsGo] = useState(false);
+  const [datesPins, setDatesPins] = useState([]);
+>>>>>>> 9efc1cced7855850ae5a11fed0fdbbf880d450c8
 
+  // Affichge du pin qui géoloc ma position
   useEffect(() => {
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -49,9 +58,54 @@ export default function DiyTourScreen() {
     })();
   }, []);
 
+  // Affichge de tout les Markers de la map à l'initialisation de la map
+  useEffect(() => {
+    fetch(`http://${FRONT_IP}:3000/allAnnounces`)
+      .then((response) => response.json())
+      .then((data) => {
+        for (let elem of data.announces) {
+          const addresse = elem.address[0].street.split(" ").join("+");
+          console.log("ADD", addresse);
+          console.log("4");
+          fetch(
+            `https://api-adresse.data.gouv.fr/search/?q=${addresse}&zipcode=${elem.address[0].zipcode}&city=${elem.address[0].city}`
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("API", data);
+
+              const foundCoords = data.features[0];
+              const coord = {
+                availableDates: elem.availableDates,
+                name: elem.host.firstname,
+                description: elem.description,
+                coords: {
+                  latitude: foundCoords.geometry.coordinates[1],
+                  longitude: foundCoords.geometry.coordinates[0],
+                },
+              };
+
+              setAllPins((previous) => [...previous, coord]);
+            });
+        }
+      });
+  }, []);
+
+  console.log("ALLPINS", allPins);
+  const hostsPins = allPins.map((elem, i) => {
+    return (
+      <Marker
+        coordinate={elem.coords}
+        title={elem.name}
+        description={elem.description}
+        pinColor="#5100FF"
+        key={i}
+      />
+    );
+  });
 
   //FORMATTE LA DATE EN STRING
-  const formattedDate = moment(date).format('DD/MM/YYYY');
+  const formattedDate = moment(date).format("DD/MM/YYYY");
 
   //VARIABLE MECHANISME DU CALENDRIER
   const showDatePicker = () => {
@@ -87,7 +141,49 @@ export default function DiyTourScreen() {
           longitudeDelta: 0.1,
         });
       });
+
+    const filterPins = allPins.map((elem, i) => {
+      if (
+        new Date(elem.availableDates[0].startDateAt) <= date &&
+        date <= new Date(elem.availableDates[0].endDateAt)
+      ) {
+        return (
+          <>
+            <Marker
+              coordinate={elem.coords}
+              title={elem.name}
+              description={elem.description}
+              pinColor="#5100FF"
+              key={i}
+            />
+          </>
+        );
+      }
+    });
+    setDatesPins(filterPins);
+
+    setIsGo(!isGo);
   };
+
+  const allDates = allPins.map((elem, i) => {
+    if (
+      new Date(elem.availableDates[0].startDateAt) <= date &&
+      date <= new Date(elem.availableDates[0].endDateAt)
+    ) {
+      return (
+        <TouchableOpacity style={styles.date}>
+          <Text key={i} style={styles.dateTxt}>
+            {formattedDate}
+          </Text>
+          <Text>{elem.name}</Text>
+          <TouchableOpacity style={styles.btnDate}>
+            <Text style={styles.textSearch}>Go</Text>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      );
+    }
+  });
+
   //ECRAN DE CHARGEMENT AVANT LA MAP
   if (!mapRegion) {
     return (
@@ -97,37 +193,39 @@ export default function DiyTourScreen() {
     );
   }
 
-  //RECHERCHE ET AFFICHE LES HÔTES DISPONIBLE 
-  function displayAvailableHost() {
+  //RECHERCHE ET AFFICHE LES HÔTES DISPONIBLE
+  // function displayAvailableHost() {
 
-    //Recherche toutes les annonces correspondantes à la date choisie:
-    fetch(`http://${FRONT_IP}:3000/allAnnounces`)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data.announces[0])
-        const hostsAvailable = []
-        for (let elem of data.announces) {
+  //   //Recherche toutes les annonces correspondantes à la date choisie:
+  //   fetch(`http://${FRONT_IP}:3000/allAnnounces`)
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       console.log("ANNONCES", data.announces[0].availableDates[0].endDateAt)
+  //       const hostsAvailable = []
+  //       console.log('DATE', date)
+  //       for (let elem of data.announces) {
 
-          if (new Date(elem.availableDates[0].startDateAt) <= date && date <= new Date(elem.availableDates[0].endDateAt)) {
+  //         if (new Date(elem.availableDates[0].startDateAt) <= date && date <= new Date(elem.availableDates[0].endDateAt)) {
 
-            hostsAvailable.push(elem)
-          }
-        }
+  //           hostsAvailable.push(elem)
+  //         }
+  //       }
 
-        setHosts(hostsAvailable)
-        console.log('Host', hosts)
-        //Cherche les coordinnées de l'adresse de l'annonce:
-        const coords = []
-        for (let elem of hosts) {
+  //       setHosts(hostsAvailable)
+  //       console.log('Host', hostsAvailable)
+  //       //Cherche les coordinnées de l'adresse de l'annonce:
+  //       const coords = []
+  //       for (let elem of hostsAvailable) {
 
-          const addresse = elem.address[0].street.split(" ").join("+")
-          console.log("ADD", addresse)
+  //         const addresse = elem.address[0].street.split(" ").join("+")
+  //         console.log("ADD", addresse)
 
-          fetch(`https://api-adresse.data.gouv.fr/search/?q=${addresse}&zipcode=${elem.address[0].zipcode}`)
-            .then(response => response.json())
-            .then(data => {
-              console.log("API", data.features)
+  //         fetch(`https://api-adresse.data.gouv.fr/search/?q=${addresse}&zipcode=${elem.address[0].zipcode}&city=${elem.address[0].city}`)
+  //           .then(response => response.json())
+  //           .then(data => {
+  //             console.log("API")
 
+<<<<<<< HEAD
               const foundCoords = data.features[0];
               coords.push({
 
@@ -159,17 +257,40 @@ export default function DiyTourScreen() {
 
     )
   })
+=======
+  //             const foundCoords = data.features[0];
+  //             console.log(elem.description)
+  //             coords.push({
+>>>>>>> 9efc1cced7855850ae5a11fed0fdbbf880d450c8
 
+  //               name: elem.host.firstname,
+  //               description: elem.description,
+  //               coords: {
+  //                 latitude: foundCoords.geometry.coordinates[1],
+  //                 longitude: foundCoords.geometry.coordinates[0]
+  //               }
+  //             })
+  //           })
+  //       }
+  //       console.log('hello')
+  //       console.log('COORDS TROUVEE', coords)
+  //       setCoordinates([...coordinates, coords])
 
+  //     })
 
+  // }
+  // console.log('COORD', coordinates)
+  // const hostsPins = coordinates.map((elem, i) => {
+  //   return (
+  //     <Marker coordinate={elem.coords} title={elem.name} description={elem.description} pinColor="#5100FF" key={i} />
+  //   )
+  // })
 
   return (
     <View style={styles.container}>
-      <MapView
-        style={StyleSheet.absoluteFillObject}
-        region={mapRegion}
-      >
+      <MapView style={StyleSheet.absoluteFillObject} region={mapRegion}>
         {currentPosition && (
+<<<<<<< HEAD
           <Marker coordinate={currentPosition} pinColor="#fecb2d">
             <Callout title="Me!" description="I'm Here">
               <View style={styles.calloutAddBtn}>
@@ -180,10 +301,14 @@ export default function DiyTourScreen() {
             </Callout>
           </Marker>)}
         {hostsPins}
+=======
+          <Marker coordinate={currentPosition} title="Me!" pinColor="#fecb2d" />
+        )}
+        {datesPins}
+>>>>>>> 9efc1cced7855850ae5a11fed0fdbbf880d450c8
       </MapView>
 
       <View style={styles.topContainer}>
-
         <TextInput
           style={styles.textInput}
           placeholder={"Where ?"}
@@ -193,7 +318,7 @@ export default function DiyTourScreen() {
           onFocus={() => setIsOpen(true)}
         />
 
-        {Platform.OS === 'ios' ? (
+        {Platform.OS === "ios" ? (
           <DateTimePicker
             value={date}
             mode="date"
@@ -207,7 +332,7 @@ export default function DiyTourScreen() {
             <TouchableOpacity style={styles.btnSearch} onPress={showDatePicker}>
               <Text>{formattedDate}</Text>
             </TouchableOpacity>
-            {isDatePickerVisible &&
+            {isDatePickerVisible && (
               <DateTimePicker
                 value={date}
                 mode="date"
@@ -216,44 +341,29 @@ export default function DiyTourScreen() {
                 style={styles.calendar}
                 isVisible={isDatePickerVisible}
               />
-            }
+            )}
           </>
-
         )}
 
         <TouchableOpacity
           style={styles.btnSearch}
-          onPress={() => { getCityLocation(); displayAvailableHost() }}
+          onPress={() => {
+            getCityLocation();
+          }}
         >
           <Text style={styles.textSearch}>Go</Text>
         </TouchableOpacity>
       </View>
 
-
       <View style={styles.bottomContainer}>
         <Text style={styles.title}>Mon Parcours </Text>
         <ScrollView style={styles.roadmap} showsVerticalScrollIndicator={false}>
-          <TouchableOpacity style={styles.date}>
-            <Text>{formattedDate}</Text>
-            <Text>{searchCity}</Text>
-            <TouchableOpacity
-              style={styles.btnDate}
-            //onPress={() =>  }
-            >
-              <Text style={styles.textSearch}>Go</Text>
-            </TouchableOpacity>
-
-
-          </TouchableOpacity>
-
+          {allDates}
         </ScrollView>
       </View>
     </View>
   );
 }
-
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -283,7 +393,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "white",
-    shadowColor: '#000000',
+    shadowColor: "#000000",
     shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
@@ -304,7 +414,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "white",
-
   },
   textInput: {
     color: "#000",
@@ -336,7 +445,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderBottomWidth: 4,
     borderRightWidth: 4,
-    shadowColor: '#000000',
+    shadowColor: "#000000",
     shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
@@ -363,7 +472,8 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   date: {
-    flexDirection: 'row',
+    marginTop: 15,
+    flexDirection: "row",
     width: "90%",
     height: 40,
     borderColor: "#5100FF",
@@ -371,15 +481,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 4,
     borderRightWidth: 4,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 5,
   },
   calendar: {
-    backgroundColor: 'white',
-    color: 'white'
-
-  }
+    backgroundColor: "white",
+    color: "white",
+  },
+  dateTxt: {
+    paddingRight: 5,
+  },
 });
-
-
-

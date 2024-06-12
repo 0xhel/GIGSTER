@@ -22,6 +22,8 @@ import { eachDayOfInterval, format, isBefore } from "date-fns";
 import { useSelector } from "react-redux";
 import { FRONT_IP } from "../hide-ip";
 import { useNavigation } from "@react-navigation/native";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import firebase from "../firebaseConfig";
 
 export default function AnnounceScreen() {
   const navigation = useNavigation();
@@ -36,6 +38,10 @@ export default function AnnounceScreen() {
     { label: "Restaurant", value: "restaurant" },
     { label: "Appartement", value: "appartement" },
   ]);
+
+  //Variable d'états pour les images
+  const [image, setImage] = useState(null)
+  const [uploading, setUploading] = useState(false)
 
   // Variable d'état des inputs
   const [street, setStreet] = useState("");
@@ -89,12 +95,47 @@ export default function AnnounceScreen() {
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      quality: 1,
+      aspect: [4, 3],
+      quality: 1
     });
+    const source = { uri: result.assets[0].uri }
+    console.log(source)
+    setImage(source)
 
     if (!result.canceled) {
       console.log(result);
+      // Step 1: Envoyer l'image à Firebase Storage
+      const { uri } = result.assets[0];
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      // Initialise le stockage
+      const storage = getStorage(firebase);
+      // permet d'avoir un nom de fichier composé de chiffres et de lettres aléatoires
+      const imageName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.jpg`
+      const storageRef = ref(storage, `images/${imageName}`);
+
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          console.log(`Image en cours d'upload`);
+        },
+        (error) => {
+          console.error(`Erreur d'upload d'image: `, error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            console.log(`Image disponible à l'URL: `, downloadURL);
+
+            // Step 2: Envoyer l'URL reçue au backend
+            setImage(downloadURL);
+          });
+        }
+      );
     } else {
       alert("Aucune image sélectionnée !");
     }
@@ -239,6 +280,7 @@ export default function AnnounceScreen() {
         capacity: sliderValue,
         description: description,
         accessibility: accessibilityCheckbox,
+        medias: [image],
         accomodation: {
           sleeping: accomodation.includes("Hébergement"),
           restauration: accomodation.includes("Restauration"),
@@ -275,7 +317,7 @@ export default function AnnounceScreen() {
             value={city}
           />
           <TextInput
-            placeholder="Indiquez le code postale"
+            placeholder="Indiquez le code postal"
             style={styles.input_address}
             keyboardType="numeric"
             onChangeText={setZipCode}

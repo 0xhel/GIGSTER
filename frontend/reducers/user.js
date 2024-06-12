@@ -28,6 +28,7 @@ const initialState = {
     isHost: false,
     medias: [],
     token: null,
+    likedHosts: []
   },
 };
 
@@ -82,6 +83,14 @@ export const userSlice = createSlice({
         (e) => e !== action.payload
       );
     },
+    addLikedHost: (state, action) => {
+      state.value.likedHosts.push(action.payload);
+    },
+    removeLikedHosts: (state, action) => {
+      state.value.likedHosts = state.value.likedHosts.filter(
+        (e) => e.title !== action.payload.title
+      );
+    },
   },
 });
 
@@ -101,5 +110,7 @@ export const {
   removeMedia,
   getArtistInfos,
   getHostInfos,
+  addLikedHost,
+  removeLikedHosts
 } = userSlice.actions;
 export default userSlice.reducer;

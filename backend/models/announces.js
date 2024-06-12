@@ -40,6 +40,7 @@ const announceSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  medias: { type: [String], default: [] },
   placeRanking: { type: Number, default: 5 },
   accomodation: { type: accomodationSchema, required: true },
   createdAt: { type: Date, default: Date.now },

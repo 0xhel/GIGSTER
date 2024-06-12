@@ -14,6 +14,7 @@ router.post("/announces", authMiddleware, (req, res) => {
     "locationType",
     "description",
     "availableDates",
+
   ];
   if (!checkBody(req.body, requiredFields)) {
     return res.json({ result: false, error: "Missing or empty fields" });
@@ -35,7 +36,7 @@ router.post("/announces", authMiddleware, (req, res) => {
       instrumentsAvailable: req.body.instrumentsAvailable,
       capacity: req.body.capacity,
       description: req.body.description,
-      //media: [resultCloudinary.secure_url], // Utilisation de l'URL fournie par Cloudinary
+      medias: req.body.medias,
       accessibility: req.body.accessibility,
       accomodation: req.body.accomodation,
       createdAt: new Date(),
