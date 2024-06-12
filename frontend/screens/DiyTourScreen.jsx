@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, Callout } from "react-native-maps";
 import * as Location from "expo-location";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment'
@@ -23,7 +23,7 @@ export default function DiyTourScreen() {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [hosts, setHosts] = useState([])
   const [coordinates, setCoordinates] = useState([])
-
+  const [hostAdd, setHostAdd] = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -147,9 +147,16 @@ export default function DiyTourScreen() {
 
   }
 
+  const handleButtonAdd = () => {
+    setHostAdd();
+    alert('Hôte ajouté à votre parcours !');
+  };
+
   const hostsPins = coordinates.map((elem, i) => {
     return (
       <Marker coordinate={elem.coords} title={elem.name} description={elem.description} pinColor="#5100FF" key={i} />
+
+
     )
   })
 
@@ -163,8 +170,15 @@ export default function DiyTourScreen() {
         region={mapRegion}
       >
         {currentPosition && (
-          <Marker coordinate={currentPosition} title="Me!" pinColor="#fecb2d" />
-        )}
+          <Marker coordinate={currentPosition} pinColor="#fecb2d">
+            <Callout title="Me!" description="I'm Here">
+              <View style={styles.calloutAddBtn}>
+                <TouchableOpacity style={styles.btnSearch} onPress={handleButtonAdd}>
+                  <Text style={styles.textSearch}>Add</Text>
+                </TouchableOpacity>
+              </View>
+            </Callout>
+          </Marker>)}
         {hostsPins}
       </MapView>
 
@@ -217,7 +231,7 @@ export default function DiyTourScreen() {
 
 
       <View style={styles.bottomContainer}>
-        <Text style={styles.title}>Mon Parcours</Text>
+        <Text style={styles.title}>Mon Parcours </Text>
         <ScrollView style={styles.roadmap} showsVerticalScrollIndicator={false}>
           <TouchableOpacity style={styles.date}>
             <Text>{formattedDate}</Text>
@@ -340,6 +354,13 @@ const styles = StyleSheet.create({
   textSearch: {
     color: "white",
     fontWeight: "bold",
+  },
+  calloutAddBtn: {
+    paddingTop: 20,
+    marginTop: 5,
+    marginBottom: 5,
+    marginLeft: 5,
+    marginRight: 5,
   },
   date: {
     flexDirection: 'row',
