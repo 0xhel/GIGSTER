@@ -63,7 +63,7 @@ export default function Login(props, navigate) {
   const [isSignIn, setIsSignIn] = useState(false);
 
   const handleSubmitSignIn = (values, { setSubmitting, setErrors }) => {
-    fetch(`http://${FRONT_IP}:3000/users/signin`, {
+    fetch(`https://gigsterbackend.vercel.app/users/signin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

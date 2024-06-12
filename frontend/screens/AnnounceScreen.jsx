@@ -254,7 +254,7 @@ export default function AnnounceScreen() {
 
   // fetch vers la DB pour envoyer les données des inputs
   const handleSubmit = () => {
-    fetch(`http://${FRONT_IP}:3000/announces`, {
+    fetch(`https://gigsterbackend.vercel.app/announces`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

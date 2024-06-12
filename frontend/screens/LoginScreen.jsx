@@ -95,7 +95,7 @@ export default function LoginScreen({ navigation }) {
   async function sendData() {
     console.log("Envoi des données vers le backend");
     console.log("Utilisateur Final:", user);
-    const resp = await fetch(`http://${FRONT_IP}:3000/users/signup`, {
+    const resp = await fetch(`https://gigsterbackend.vercel.app/users/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user),
