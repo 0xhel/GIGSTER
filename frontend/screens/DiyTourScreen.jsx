@@ -21,17 +21,11 @@ export default function DiyTourScreen() {
   const [isOpen, setIsOpen] = useState(false);
   const [date, setDate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-<<<<<<< HEAD
-  const [hosts, setHosts] = useState([])
-  const [coordinates, setCoordinates] = useState([])
-  const [hostAdd, setHostAdd] = useState([]);
-=======
   const [hosts, setHosts] = useState([]);
   const [coordinates, setCoordinates] = useState([]);
   const [allPins, setAllPins] = useState([]);
   const [isGo, setIsGo] = useState(false);
   const [datesPins, setDatesPins] = useState([]);
->>>>>>> 9efc1cced7855850ae5a11fed0fdbbf880d450c8
 
   // Affichge du pin qui géoloc ma position
   useEffect(() => {
@@ -225,43 +219,9 @@ export default function DiyTourScreen() {
   //           .then(data => {
   //             console.log("API")
 
-<<<<<<< HEAD
-              const foundCoords = data.features[0];
-              coords.push({
-
-                name: elem.host.firstname,
-                description: elem.description,
-                coords: {
-                  latitude: foundCoords.geometry.coordinates[1],
-                  longitude: foundCoords.geometry.coordinates[0]
-                }
-              })
-            })
-        }
-        setCoordinates([...coordinates, coords])
-
-
-      })
-
-  }
-
-  const handleButtonAdd = () => {
-    setHostAdd();
-    alert('Hôte ajouté à votre parcours !');
-  };
-
-  const hostsPins = coordinates.map((elem, i) => {
-    return (
-      <Marker coordinate={elem.coords} title={elem.name} description={elem.description} pinColor="#5100FF" key={i} />
-
-
-    )
-  })
-=======
   //             const foundCoords = data.features[0];
   //             console.log(elem.description)
   //             coords.push({
->>>>>>> 9efc1cced7855850ae5a11fed0fdbbf880d450c8
 
   //               name: elem.host.firstname,
   //               description: elem.description,
@@ -290,22 +250,9 @@ export default function DiyTourScreen() {
     <View style={styles.container}>
       <MapView style={StyleSheet.absoluteFillObject} region={mapRegion}>
         {currentPosition && (
-<<<<<<< HEAD
-          <Marker coordinate={currentPosition} pinColor="#fecb2d">
-            <Callout title="Me!" description="I'm Here">
-              <View style={styles.calloutAddBtn}>
-                <TouchableOpacity style={styles.btnSearch} onPress={handleButtonAdd}>
-                  <Text style={styles.textSearch}>Add</Text>
-                </TouchableOpacity>
-              </View>
-            </Callout>
-          </Marker>)}
-        {hostsPins}
-=======
           <Marker coordinate={currentPosition} title="Me!" pinColor="#fecb2d" />
         )}
         {datesPins}
->>>>>>> 9efc1cced7855850ae5a11fed0fdbbf880d450c8
       </MapView>
 
       <View style={styles.topContainer}>
