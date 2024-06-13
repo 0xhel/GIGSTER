@@ -36,4 +36,4 @@ yarn-error.*
 
 .env
 hide-ip.js
-firebaseConfig.js
+firebaseconfig.js

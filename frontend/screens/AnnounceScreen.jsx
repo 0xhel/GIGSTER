@@ -15,15 +15,13 @@ import DropDownPicker from "react-native-dropdown-picker";
 
 import * as ImagePicker from "expo-image-picker";
 import Slider from "@react-native-community/slider";
-import moment from "moment";
 
 import { CalendarList, LocaleConfig } from "react-native-calendars";
 import { eachDayOfInterval, format, isBefore } from "date-fns";
 import { useSelector } from "react-redux";
-import { FRONT_IP } from "../hide-ip";
 import { useNavigation } from "@react-navigation/native";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import firebase from "../firebaseConfig";
+import firebase from "../firebaseconfig";
 
 export default function AnnounceScreen() {
   const navigation = useNavigation();
