@@ -13,7 +13,10 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 
+
 export default function Step2(props) {
+
+
   // Validation schema for artist
   const artistSchema = yup.object().shape({
     artistname: yup.string().required("Artist name is required"),
@@ -164,7 +167,7 @@ export default function Step2(props) {
                   value={formik.values.favoritesGenres}
                 />
                 {formik.touched.favoritesGenres &&
-                formik.errors.favoritesGenres ? (
+                  formik.errors.favoritesGenres ? (
                   <Text style={styles.error}>
                     {formik.errors.favoritesGenres}
                   </Text>
@@ -253,7 +256,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 0,
   },
-  input_description:{
+  input_description: {
     height: 150,
     paddingTop: 10,
     borderRadius: 13,
