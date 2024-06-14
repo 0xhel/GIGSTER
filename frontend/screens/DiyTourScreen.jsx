@@ -60,7 +60,7 @@ export default function DiyTourScreen() {
         for (let elem of data.announces) {
           const addresse = elem.address[0].street.split(" ").join("+");
           console.log("ADD", addresse);
-          console.log("4");
+
           fetch(
             `https://api-adresse.data.gouv.fr/search/?q=${addresse}&zipcode=${elem.address[0].zipcode}&city=${elem.address[0].city}`
           )
