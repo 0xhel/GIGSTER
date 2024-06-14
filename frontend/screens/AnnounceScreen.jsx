@@ -39,7 +39,7 @@ export default function AnnounceScreen() {
 
   //Variable d'états pour les images
   const [image, setImage] = useState(null)
-  const [uploading, setUploading] = useState(false)
+
 
   // Variable d'état des inputs
   const [street, setStreet] = useState("");
