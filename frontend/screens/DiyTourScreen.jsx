@@ -250,7 +250,7 @@ export default function DiyTourScreen() {
         {currentPosition && (
           <Marker coordinate={currentPosition} title="Me!" pinColor="#fecb2d" />
         )}
-        {datesPins}
+        {!isGo ? hostsPins : datesPins}
       </MapView>
 
       <View style={styles.topContainer}>
