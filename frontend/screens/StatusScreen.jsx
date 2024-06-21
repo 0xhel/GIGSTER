@@ -1,6 +1,6 @@
 import { TouchableOpacity, View, Text, StyleSheet, Alert } from "react-native";
 
-import ProgressStepsComponent from "../components/ProgessStepsComponent";
+
 
 export default function StatusScreen(props) {
     function handleArtist() {

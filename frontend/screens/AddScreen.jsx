@@ -1,4 +1,4 @@
-import user from "../reducers/user";
+
 import { useSelector } from "react-redux";
 import DiyTourScreen from "./DiyTourScreen"
 import AnnounceScreen from "./AnnounceScreen";
@@ -17,4 +17,4 @@ export default function AddScreen() {
   );
 }
 
-console.log('debug')
+
