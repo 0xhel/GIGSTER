@@ -28,7 +28,7 @@ export default function Step1(props) {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   function nextStep(values) {
-    console.log("date venant de l'input : ", values.birthdate);
+
     props.updateUser({
       address: {
         street: values.street,

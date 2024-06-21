@@ -8,9 +8,6 @@ const secretKey = process.env.SECRETKEY;
 const { User } = require('../models/users');
 
 router.post("/signup", (req, res) => {
-    /*if (req.body.password !== req.body.confirmPassword) {
-        return res.json({ result: false, error: "Confirm your password" });
-    }*/
     if (!checkBody(req.body, ['username', 'password', 'email', 'firstname', 'lastname', 'birthdate', 'phoneNumber'])) {
         res.json({ result: false, error: 'Missing or empty fields' });
         return;
