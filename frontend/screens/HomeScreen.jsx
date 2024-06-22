@@ -30,12 +30,10 @@ export default function HomeScreen() {
   const [modalDisplay, setModalDisplay] = useState(0);
   const [styleLike, setStyleLike] = useState({});
   const [searching, setSearching] = useState(false);
+
   const navigation = useNavigation();
-
   const dispatch = useDispatch();
-
   const user = useSelector((state) => state.user.value);
-
   const cardsLiked = useSelector((state) => state.user.value.likedHosts);
   console.log(cardsLiked);
 

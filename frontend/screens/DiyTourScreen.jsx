@@ -93,7 +93,7 @@ export default function DiyTourScreen() {
         title={elem.name}
         description={elem.description}
         pinColor="#5100FF"
-        key={i}
+        key={i.toString()}
       />
     );
   });
@@ -136,7 +136,7 @@ export default function DiyTourScreen() {
         });
       });
 
-    const filterPins = allPins.map((elem, index) => {
+    const filterPins = allPins.map((elem, i) => {
       if (
         new Date(elem.availableDates[0].startDateAt) <= date &&
         date <= new Date(elem.availableDates[0].endDateAt)
@@ -148,7 +148,7 @@ export default function DiyTourScreen() {
               title={elem.name}
               description={elem.description}
               pinColor="#5100FF"
-              key={index}
+              key={i.toString()}
             />
           </>
         );
@@ -159,13 +159,13 @@ export default function DiyTourScreen() {
     setIsGo(!isGo);
   };
 
-  const allDates = allPins.map((elem, index) => {
+  const allDates = allPins.map((elem, i) => {
     if (
       new Date(elem.availableDates[0].startDateAt) <= date &&
       date <= new Date(elem.availableDates[0].endDateAt)
     ) {
       return (
-        <TouchableOpacity key={index} style={styles.date}>
+        <TouchableOpacity key={i.toString()} style={styles.date}>
           <Text style={styles.dateTxt}>{formattedDate}</Text>
           <Text>{elem.name}</Text>
           <TouchableOpacity style={styles.btnDate}>
