@@ -11,7 +11,6 @@ router.post("/announces", authMiddleware, (req, res) => {
     "instrumentsAvailable",
     "locationType",
     "capacity",
-    "locationType",
     "description",
     "availableDates",
 

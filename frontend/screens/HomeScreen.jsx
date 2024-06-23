@@ -82,7 +82,7 @@ export default function HomeScreen() {
       note: "5.0",
     },
   ];
-
+  // CARDS SECTION TOP HOST
   const cardList = cardsData.map((data, i) => {
     return (
       <TouchableOpacity
